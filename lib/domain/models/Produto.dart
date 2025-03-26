@@ -1,9 +1,10 @@
 import 'dart:ffi';
 
 class Produto {
+
   int? id;
   String nome;
-  Float preco;
+  double preco;
   String foto;
 
   Produto({
