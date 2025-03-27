@@ -3,6 +3,6 @@ import '../repositories/produto.repository.dart';
 
 class ProdutoService {
   static List<Produto> listarProdutos() {
-    return ProdutoRepositoy.listarProdutos();
+    return ProdutoRepository.listarProdutos();
   }
 }
