@@ -69,8 +69,8 @@ class CardProduto extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
               child: Image.asset(
                 "imagens/${produto.foto}",
-                width: 80,
-                height: 80,
+                width: 70,
+                height: 70,
                 fit: BoxFit.contain,
               ),
             ),
@@ -101,24 +101,38 @@ class CardProduto extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 8), // Ajuste no espaçamento
           // Expiração e detalhes do produto
           Padding(
             padding: const EdgeInsets.only(top: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey[400], // Botão cinza
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 2, horizontal: 4), // Diminuído o padding
+                  ),
+                  child: Text(
+                    "Expira em 10 dias",
+                    style: TextStyle(color: Colors.white, fontSize: 12), // Diminuído o tamanho da fonte
+                  ),
+                ),
+                SizedBox(height: 4), // Ajuste no espaçamento
                 Text(
                   "Confira os detalhes",
                   style: TextStyle(
-                    color: Colors.blue[800],
-                    fontSize: 12,
+                    color: Colors.blue[800], // Azul escuro
+                    fontSize: 12, // Diminuído o tamanho da fonte
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
             ),
-          )// Ajuste no espaçamento
+          ),
         ],
       ),
     );
