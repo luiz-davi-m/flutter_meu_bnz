@@ -104,7 +104,7 @@ class CardProduto extends StatelessWidget {
           SizedBox(height: 8), // Ajuste no espaçamento
           // Expiração e detalhes do produto
           Padding(
-            padding: const EdgeInsets.only(top: 20),
+            padding: const EdgeInsets.only(top: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -118,8 +118,7 @@ class CardProduto extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-          SizedBox(height: 8), // Ajuste no espaçamento
+          )// Ajuste no espaçamento
         ],
       ),
     );
