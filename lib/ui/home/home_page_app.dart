@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_meu_bnz/ui/home/home.dart';
 
+import '../perfil/perfil_page.dart';
+
 class HomePageApp extends StatelessWidget {
   const HomePageApp({super.key});
 
@@ -69,23 +71,23 @@ class HomePageApp extends StatelessWidget {
                 ),
               ),
               PopupMenuItem(
-                value: 1,
-                child: GestureDetector(
-                  onTap: () {
-                    print('Perfil');
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => PerfilPage()),
-                    // );
-                  },
-                  child: Row(
-                    children: [
-                      Icon(Icons.person, color: Colors.blue),
-                      SizedBox(width: 10),
-                      Text('Perfil'),
-                    ],
-                  ),
+                value: 3,
+                child: Row(
+                  children: [
+                    Icon(Icons.person, color: Colors.blue),
+                    SizedBox(width: 10),
+                    Text('Perfil'),
+                  ],
                 ),
+                onTap: () {
+                  Future.delayed(Duration.zero, () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => PerfilPage()),
+                    );
+                  });
+                },
               ),
             ],
             elevation: 8.0,
