@@ -8,7 +8,7 @@ class HomePageApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF35478E),
+        backgroundColor: Color(0xFF253885),
         toolbarHeight: 0,
       ),
       body: Home(),
@@ -92,7 +92,6 @@ class HomePageApp extends StatelessWidget {
           );
         },
       ),
-
     );
   }
 }
