@@ -161,9 +161,6 @@ class _PerfilPage extends State<PerfilPage> {
                             ),
                           ),
                           ElevatedButton(
-                            onPressed: () {
-                              print("Resgatar cashback");
-                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Color(0xFF253885),
                               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -172,6 +169,135 @@ class _PerfilPage extends State<PerfilPage> {
                               ),
                             ),
                             child: Text("Resgatar", style: TextStyle(color: Colors.white)),
+                            onPressed: () {
+                              showModalBottomSheet<void>(
+                                context: context,
+                                isScrollControlled: true,
+                                builder: (BuildContext context) {
+                                  return Container(
+                                    height: MediaQuery.of(context).size.height - 150,
+                                    width: MediaQuery.of(context).size.width,
+                                    padding: EdgeInsets.all(16),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(16),
+                                      ),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                IconButton(
+                                                  icon: Icon(Icons.arrow_back),
+                                                  onPressed: () => Navigator.pop(context),
+                                                ),
+                                                Text(
+                                                  "Resgate de Cashback",
+                                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                                ),
+                                              ],
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.only(right: 10),
+                                              child: Icon(Icons.help_outline, color: Colors.grey),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 50),
+                                        Container(
+                                          margin: EdgeInsets.symmetric(horizontal: 5),
+                                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 100),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(12),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black26,
+                                                blurRadius: 8,
+                                                offset: Offset(0, 4),
+                                              ),
+                                            ],
+                                          ),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              Center(
+                                                child: Text(
+                                                  "Valor de Resgate",
+                                                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                                                ),
+                                              ),
+                                              SizedBox(height: 30), // Espaçamento reduzido para melhor estética
+                                              Column(
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  Text.rich(
+                                                    TextSpan(
+                                                      children: [
+                                                        TextSpan(
+                                                          text: "R\$ ",
+                                                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF253885)),
+                                                        ),
+                                                        TextSpan(
+                                                          text: '2.50',
+                                                          style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold, color: Color(0xFF253885)),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 5), // Pequeno espaçamento antes da linha
+                                                  Divider(color: Colors.grey, thickness: 1), // Linha mais sutil
+                                                ],
+                                              ),
+                                              SizedBox(height: 20),
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.green,
+                                                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(8),
+                                                  ),
+                                                ),
+                                                onPressed: () {
+                                                  print("Resgatar cashback");
+                                                },
+                                                child: Center(
+                                                  child: Text("Resgatar Agora", style: TextStyle(color: Colors.white, fontSize: 16)),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(height: 20),
+                                        Container(
+                                          padding: EdgeInsets.all(16),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(8),
+                                            border: Border.all(color: Colors.grey.shade300),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Icon(Icons.account_balance_wallet, color: Colors.blue, size: 30),
+                                              SizedBox(width: 10),
+                                              Text(
+                                                "Carteira Digital",
+                                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            },
                           ),
                         ],
                       ),
