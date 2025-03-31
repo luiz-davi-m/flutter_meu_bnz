@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_meu_bnz/ui/home/home.dart';
 import 'package:flutter_meu_bnz/ui/home/home_page_app.dart';
+import 'package:flutter_meu_bnz/utils/widgets/float_action_button.dart';
+
+import '../../domain/models/ResgateCashback.dart';
 
 class PerfilPage extends StatefulWidget {
   const PerfilPage({super.key});
@@ -11,65 +15,35 @@ class PerfilPage extends StatefulWidget {
 
 class _PerfilPage extends State<PerfilPage> {
 
+  final _formKey = GlobalKey<FormState>();
+  final _cashbackController = TextEditingController();
+  double _cashback = 150;
+  List<ResgateCashback> _historicoResgatesCashback = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _cashbackController.value = TextEditingValue(text: _cashback.toStringAsFixed(2));
+    _historicoResgatesCashback = [
+      ResgateCashback(
+        categoria: 'compra',
+        dataResgate: DateTime.now(),
+        valorResgate: 75,
+      ),
+      ResgateCashback(
+        categoria: 'compra',
+        dataResgate: DateTime.now(),
+        valorResgate: 75,
+      ),
+    ];
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
-        child: Icon(Icons.menu, color: Colors.white),
-        onPressed: () {
-          final RenderBox button = context.findRenderObject() as RenderBox;
-          final Offset buttonPosition = button.localToGlobal(Offset.zero);
-          final double buttonHeight = button.size.height;
-          final double buttonWidth = button.size.width;
-
-          showMenu(
-            context: context,
-            position: RelativeRect.fromLTRB(
-              buttonPosition.dx + buttonWidth - 50,
-              buttonPosition.dy + buttonHeight - 233,
-              0.0,
-              0.0,
-            ),
-            items: [
-              PopupMenuItem(
-                value: 1,
-                child: Row(
-                  children: [
-                    Icon(Icons.discount, color: Colors.blue),
-                    SizedBox(width: 10),
-                    Text('Descontos'),
-                  ],
-                ),
-                onTap: () {
-                  Future.delayed(Duration.zero, () {
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Home()),
-                    );
-                  });
-                },
-              ),
-              PopupMenuItem(
-                value: 2,
-                child: Row(
-                  children: [
-                    Icon(Icons.newspaper, color: Colors.blue),
-                    SizedBox(width: 10),
-                    Text('Jornal'),
-                  ],
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                  print('Jornal');
-                },
-              ),
-            ],
-          );
-        },
-      ),
+      floatingActionButton: MenuFloatingActionButton(),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
@@ -154,7 +128,7 @@ class _PerfilPage extends State<PerfilPage> {
                                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green), // Tamanho ajustado
                                 ),
                                 TextSpan(
-                                  text: '150',
+                                  text: _cashback.toStringAsFixed(2),
                                   style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold, color: Colors.green), // Tamanho ajustado
                                 ),
                               ],
@@ -165,7 +139,7 @@ class _PerfilPage extends State<PerfilPage> {
                               backgroundColor: Color(0xFF253885),
                               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8), // Ajuste o valor aqui para bordas menos arredondadas
+                                borderRadius: BorderRadius.circular(8),
                               ),
                             ),
                             child: Text("Resgatar", style: TextStyle(color: Colors.white)),
@@ -194,7 +168,9 @@ class _PerfilPage extends State<PerfilPage> {
                                               children: [
                                                 IconButton(
                                                   icon: Icon(Icons.arrow_back),
-                                                  onPressed: () => Navigator.pop(context),
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
                                                 ),
                                                 Text(
                                                   "Resgate de Cashback",
@@ -232,39 +208,55 @@ class _PerfilPage extends State<PerfilPage> {
                                                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                                                 ),
                                               ),
-                                              SizedBox(height: 30), // Espaçamento reduzido para melhor estética
-                                              Column(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                children: [
-                                                  Text.rich(
-                                                    TextSpan(
-                                                      children: [
-                                                        TextSpan(
-                                                          text: "R\$ ",
-                                                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF253885)),
-                                                        ),
-                                                        TextSpan(
-                                                          text: '2.50',
-                                                          style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold, color: Color(0xFF253885)),
-                                                        ),
-                                                      ],
-                                                    ),
+                                              SizedBox(height: 30),
+                                              TextFormField(
+                                                controller: _cashbackController,
+                                                decoration: InputDecoration(
+                                                  labelText: "Valor",
+                                                  prefixText: "R\$ ",
+                                                  prefixStyle: TextStyle(
+                                                    fontSize: 30,
+                                                      fontWeight: FontWeight.bold,
                                                   ),
-                                                  SizedBox(height: 5), // Pequeno espaçamento antes da linha
-                                                  Divider(color: Colors.grey, thickness: 1), // Linha mais sutil
+                                                ),
+                                                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                                inputFormatters: [
+                                                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
                                                 ],
+                                                style: TextStyle(
+                                                  fontSize: 60,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.green,
+                                                ),
                                               ),
                                               SizedBox(height: 20),
                                               ElevatedButton(
                                                 style: ElevatedButton.styleFrom(
-                                                  backgroundColor: Colors.green,
+                                                  backgroundColor: Color(0xFF253885),
                                                   padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40),
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius: BorderRadius.circular(8),
                                                   ),
                                                 ),
                                                 onPressed: () {
-                                                  print("Resgatar cashback");
+                                                  setState(() {
+                                                    final double? valorResgatar = double.tryParse(_cashbackController.text.replaceAll('R\$', '').trim());
+
+                                                    if (valorResgatar != null && valorResgatar <= _cashback) {
+                                                      _cashback -= valorResgatar;
+                                                      _cashbackController.value = TextEditingValue(text: _cashback.toStringAsFixed(2));
+
+                                                      _historicoResgatesCashback.add(
+                                                        ResgateCashback(
+                                                          categoria: 'troca',
+                                                          dataResgate: DateTime.now(),
+                                                          valorResgate: valorResgatar,
+                                                        ),
+                                                      );
+                                                    }
+
+                                                    Navigator.pop(context);
+                                                  });
                                                 },
                                                 child: Center(
                                                   child: Text("Resgatar Agora", style: TextStyle(color: Colors.white, fontSize: 16)),
