@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_meu_bnz/ui/home/home.dart';
 import 'package:flutter_meu_bnz/ui/home/home_page_app.dart';
+import 'package:flutter_meu_bnz/ui/perfil/widgets/historico_widget.dart';
 import 'package:flutter_meu_bnz/utils/widgets/float_action_button.dart';
 
 import '../../domain/models/ResgateCashback.dart';
@@ -106,11 +107,124 @@ class _PerfilPage extends State<PerfilPage> {
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         IconButton(
+                          icon: Image.asset(
+                            'imagens/icones/historico.png',
+                            color: Color(0xFF253885),
+                            width: 24,
+                            height: 24,
+                          ),
                           onPressed: () {
-                            print("Botão de ícone superior pressionado");
+                            showModalBottomSheet<void>(
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (BuildContext context) {
+                                return Container(
+                                  height: MediaQuery.of(context).size.height - 150,
+                                  width: MediaQuery.of(context).size.width,
+                                  padding: EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(16),
+                                    ),
+                                  ),
+                                  child: Column(
+                                    children: <Widget>[
+                                      Row(
+                                        children: [
+                                          IconButton(
+                                            icon: Icon(Icons.arrow_back),
+                                            onPressed: () => Navigator.pop(context),
+                                          ),
+                                          Text(
+                                            "CashBack",
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          SizedBox(width: 48), // Espaço para alinhar
+                                        ],
+                                      ),
+                                      SizedBox(height: 16),
+                                      Container(
+                                        padding: EdgeInsets.all(50),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(12),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black.withOpacity(0.2),
+                                              blurRadius: 8,
+                                              offset: Offset(0, 4)
+                                            ),
+                                          ],
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              "Histórico de Cashback",
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            SizedBox(height: 8),
+                                            Text(
+                                              "R\$ ${_cashback.toStringAsFixed(2)}",
+                                              style: TextStyle(
+                                                fontSize: 50,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color(0xFF253885),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(height: 16),
+                                      Container(
+                                        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[200],
+                                          border: Border.all(color: Colors.grey),
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              "Mar/25",
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Icon(Icons.keyboard_arrow_down, color: Colors.black),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(height: 16),
+                                      Expanded(
+                                        child: ListView.builder(
+                                          itemCount: _historicoResgatesCashback.length,
+                                          itemBuilder: (context, index) {
+                                            final resgate = _historicoResgatesCashback[index];
+                                            return HistoricoWidget(
+                                              categoria: resgate.categoria,
+                                              dataResgate: resgate.dataResgate,
+                                              valorResgate: resgate.valorResgate,
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
                           },
-                          icon: Icon(Icons.info, color: Color(0xFF253885)),
-                        ),
+                        )
                       ],
                     ),
                   ),
@@ -246,7 +360,8 @@ class _PerfilPage extends State<PerfilPage> {
                                                       _cashback -= valorResgatar;
                                                       _cashbackController.value = TextEditingValue(text: _cashback.toStringAsFixed(2));
 
-                                                      _historicoResgatesCashback.add(
+                                                      _historicoResgatesCashback.insert(
+                                                        0,
                                                         ResgateCashback(
                                                           categoria: 'troca',
                                                           dataResgate: DateTime.now(),
