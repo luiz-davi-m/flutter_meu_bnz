@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_meu_bnz/ui/home/home.dart';
+import 'package:flutter_meu_bnz/screens/journal_ofertas_screen.dart';
 
 class HomePageApp extends StatelessWidget {
   const HomePageApp({super.key});
@@ -50,22 +51,19 @@ class HomePageApp extends StatelessWidget {
                 ),
               ),
               PopupMenuItem(
-                value: 2,
-                child: GestureDetector(
-                  onTap: () {
-                    print('Jornal');
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => JornalPage()),
-                    // );
-                  },
-                  child: Row(
-                    children: [
-                      Icon(Icons.newspaper, color: Colors.blue),
-                      SizedBox(width: 10),
-                      Text('Jornal'),
-                    ],
-                  ),
+                value: 2, // Mantenha um valor único para identificar o item
+                onTap: () { // Use onTap diretamente no PopupMenuItem
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const JournalOfertasScreen()),
+                  );
+                },
+                child: Row(
+                  children: const [
+                    Icon(Icons.newspaper, color: Colors.blue),
+                    SizedBox(width: 10),
+                    Text('Jornal'),
+                  ],
                 ),
               ),
               PopupMenuItem(

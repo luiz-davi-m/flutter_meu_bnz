@@ -19,8 +19,13 @@ class _JournalOfertasScreenState extends State<JournalOfertasScreen> {
     'Padaria',
     'Enlatados',
     'Alimento',
-    'Proteinas'
+    'Proteinas',
     'Fruta',
+  ];
+
+  final List<Color> _coresFundo = [
+    const Color(0xFFF5F9FF),
+    const Color(0xFFF0FFF0),
   ];
 
   Future<List<Produto>> _carregarProdutos() async {
@@ -50,13 +55,17 @@ class _JournalOfertasScreenState extends State<JournalOfertasScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Jornal de ofertas',
-                style: TextStyle(
-                  color: Color(0xFF083DCC),
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
+              Padding(
+                padding: const EdgeInsets.only(left: 20, top: 20),
+                child: const Text(
+                  'Jornal de ofertas',
+                  style: TextStyle(
+                    color: Color(0xFF083DCC),
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               Container(
@@ -71,37 +80,44 @@ class _JournalOfertasScreenState extends State<JournalOfertasScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: const Color(0xFF083DCC), width: 1.5),
-                ),
-                child: DropdownButton<String>(
-                  value: _categoriaSelecionada,
-                  isExpanded: true,
-                  underline: const SizedBox(),
-                  items: _categorias.map((String categoria) {
-                    return DropdownMenuItem<String>(
-                      value: categoria,
-                      child: Text(
-                        categoria,
-                        style: const TextStyle(
-                          color: Color(0xFF253885),
-                          fontWeight: FontWeight.w600,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Container(
+                  width: double.infinity,
+                  constraints: const BoxConstraints(maxWidth: 400),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: const Color(0xFF083DCC), width: 1.5),
+                  ),
+                  child: DropdownButton<String>(
+                    value: _categoriaSelecionada,
+                    isExpanded: true,
+                    underline: const SizedBox(),
+                    items: _categorias.map((String categoria) {
+                      return DropdownMenuItem<String>(
+                        value: categoria,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Text(
+                            categoria,
+                            style: const TextStyle(
+                              color: Color(0xFF253885),
+                              fontWeight: FontWeight.w600,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (String? novaCategoria) {
-                    if (novaCategoria != null) {
-                      setState(() {
-                        _categoriaSelecionada = novaCategoria;
-                      });
-                    }
-                  },
+                      );
+                    }).toList(),
+                    onChanged: (String? novaCategoria) {
+                      if (novaCategoria != null) {
+                        setState(() {
+                          _categoriaSelecionada = novaCategoria;
+                        });
+                      }
+                    },
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
@@ -118,31 +134,45 @@ class _JournalOfertasScreenState extends State<JournalOfertasScreen> {
                   final produtosFiltrados = _filtrarProdutosPorCategoria(produtos);
 
                   if (produtosFiltrados.isEmpty) {
-                    return Center(child: Text("Nenhum produto de $_categoriaSelecionada disponível"));
+                    return Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: Text("Nenhum produto de $_categoriaSelecionada disponível"),
+                      ),
+                    );
                   }
 
-                  return GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    padding: const EdgeInsets.all(15),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.7,
-                      crossAxisSpacing: 15,
-                      mainAxisSpacing: 15,
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.7,
+                        crossAxisSpacing: 15,
+                        mainAxisSpacing: 15,
+                      ),
+                      itemCount: produtosFiltrados.length,
+                      itemBuilder: (context, index) {
+                        final produto = produtosFiltrados[index];
+                        return Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: _coresFundo[index % _coresFundo.length],
+                          ),
+                          child: ProductCard(
+                            imageUrl: 'imagens/${produto.foto}',
+                            title: produto.nome,
+                            price: 'R\$ ${produto.preco.toStringAsFixed(2)}',
+                          ),
+                        );
+                      },
                     ),
-                    itemCount: produtosFiltrados.length,
-                    itemBuilder: (context, index) {
-                      final produto = produtosFiltrados[index];
-                      return ProductCard(
-                        imageUrl: 'imagens/${produto.foto}',
-                        title: produto.nome,
-                        price: 'R\$ ${produto.preco.toStringAsFixed(2)}',
-                      );
-                    },
                   );
                 },
               ),
+              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -173,9 +203,15 @@ class _JournalOfertasScreenState extends State<JournalOfertasScreen> {
             ],
           ),
         ),
-        const PopupMenuItem(
+        PopupMenuItem(
           value: 'jornal',
-          child: Row(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const JournalOfertasScreen()),
+            );
+          },
+          child: const Row(
             children: [
               Icon(Icons.newspaper, color: Colors.blue),
               SizedBox(width: 10),
