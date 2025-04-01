@@ -181,9 +181,7 @@ class _HomeState extends State<Home> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
               child: FutureBuilder<List<Produto>>(
-                future: Future.delayed(Duration(milliseconds: 500), () async {
-                  return ProdutoService.listarProdutos();
-                }),
+                future: ProdutoService.listarProdutos(), // Chamada direta
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(child: CircularProgressIndicator());
