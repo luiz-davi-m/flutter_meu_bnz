@@ -143,7 +143,7 @@ class _PerfilPage extends State<PerfilPage> {
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                          SizedBox(width: 48), // Espaço para alinhar
+                                          SizedBox(width: 48),
                                         ],
                                       ),
                                       SizedBox(height: 16),
@@ -239,11 +239,11 @@ class _PerfilPage extends State<PerfilPage> {
                               children: [
                                 TextSpan(
                                   text: "R\$ ",
-                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green), // Tamanho ajustado
+                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green),
                                 ),
                                 TextSpan(
-                                  text: _cashback.toStringAsFixed(2),
-                                  style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold, color: Colors.green), // Tamanho ajustado
+                                  text: _cashback.toStringAsFixed(1),
+                                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: Colors.green),
                                 ),
                               ],
                             ),
@@ -430,7 +430,7 @@ class _PerfilPage extends State<PerfilPage> {
                       print("Clicou em Meu Perfil");
                     },
                   ),
-                  Divider(), // Linha separadora opcional
+                  Divider(),
                   ListTile(
                     leading: Image.asset(
                       "imagens/icones/desconto.png",
