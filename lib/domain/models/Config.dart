@@ -2,19 +2,23 @@ import 'dart:ffi';
 
 class Config {
   int? id;
-  int nome;
-  Float cashback;
-  String cashback_resgate;
+  double cashback;
 
   Config({
     this.id,
-    required this.nome,
     required this.cashback,
-    required this.cashback_resgate
   });
 
   @override
   String toString() {
-    return "{ nome=$nome, cashback=$cashback cashback_resgate=$cashback_resgate }";
+    return "{ cashback=$cashback }";
   }
+  // Método para converter JSON do Supabase para um objeto Config
+  factory Config.fromJson(Map<String, dynamic> json) {
+    return Config(
+      id: json['id'],
+      cashback: (json['cashback'] as num).toDouble(),
+    );
+  }
+
 }
