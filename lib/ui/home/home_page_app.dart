@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_meu_bnz/ui/home/home.dart';
 import 'package:flutter_meu_bnz/screens/journal_ofertas_screen.dart';
+import 'package:flutter_meu_bnz/utils/widgets/float_action_button.dart';
 
 class HomePageApp extends StatelessWidget {
   const HomePageApp({super.key});
