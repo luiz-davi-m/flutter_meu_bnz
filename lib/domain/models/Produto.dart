@@ -1,10 +1,11 @@
-
 class Produto {
   int? id;
   String nome;
   double preco;
   String foto;
   double percentualDesconto;
+
+  double get precoComDesconto => preco * (1 - percentualDesconto / 100);
 
   Produto({
     this.id,
@@ -14,10 +15,14 @@ class Produto {
     required this.percentualDesconto,
   });
 
-  double get precoComDesconto => preco * (1 - percentualDesconto / 100);
-
-  @override
-  String toString() {
-    return "{ id=$id, nome=$nome, preco=$preco, percentualDesconto=$percentualDesconto%, precoComDesconto=${precoComDesconto.toStringAsFixed(2)}, foto=$foto }";
+  // Método para converter JSON do Supabase para um objeto Produto
+  factory Produto.fromJson(Map<String, dynamic> json) {
+    return Produto(
+      id: json['id'],
+      nome: json['nome'],
+      preco: (json['preco'] as num).toDouble(),
+      foto: json['foto'],
+      percentualDesconto: (json['percentualDesconto'] as num).toDouble(),
+    );
   }
 }
