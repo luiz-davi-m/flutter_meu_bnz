@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_meu_bnz/data/services/historico_resgates.service.dart';
 import 'package:flutter_meu_bnz/ui/home/home.dart';
 import 'package:flutter_meu_bnz/ui/home/home_page_app.dart';
 import 'package:flutter_meu_bnz/ui/perfil/widgets/historico_widget.dart';
 import 'package:flutter_meu_bnz/utils/widgets/float_action_button.dart';
 
+import '../../data/services/configs.service.dart';
 import '../../domain/models/ResgateCashback.dart';
 
 class PerfilPage extends StatefulWidget {
@@ -18,27 +20,31 @@ class _PerfilPage extends State<PerfilPage> {
 
   final _formKey = GlobalKey<FormState>();
   final _cashbackController = TextEditingController();
-  double _cashback = 150;
-  List<ResgateCashback> _historicoResgatesCashback = [];
+  double _cashback = 0;
+  late Future<List<ResgateCashback>> _historicoFuture;
 
   @override
   void initState() {
     super.initState();
-    _cashbackController.value = TextEditingValue(text: _cashback.toStringAsFixed(2));
-    _historicoResgatesCashback = [
-      ResgateCashback(
-        categoria: 'compra',
-        dataResgate: DateTime.now(),
-        valorResgate: 75,
-      ),
-      ResgateCashback(
-        categoria: 'compra',
-        dataResgate: DateTime.now(),
-        valorResgate: 75,
-      ),
-    ];
+    _loadConfig();
+    _loadHistoricos();
   }
 
+  Future<void> _loadConfig() async {
+    final config = await ConfigsService.configs();
+    if (config != null) {
+      setState(() {
+        _cashback = config.cashback;
+        _cashbackController.text = _cashback.toString();
+      });
+    }
+  }
+
+  Future<void> _loadHistoricos() async {
+    setState(() {
+      _historicoFuture = HistoricoResgateService.historicoResgates();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +120,7 @@ class _PerfilPage extends State<PerfilPage> {
                             height: 24,
                           ),
                           onPressed: () {
+                            _loadHistoricos();
                             showModalBottomSheet<void>(
                               context: context,
                               isScrollControlled: true,
@@ -206,14 +213,31 @@ class _PerfilPage extends State<PerfilPage> {
                                       ),
                                       SizedBox(height: 16),
                                       Expanded(
-                                        child: ListView.builder(
-                                          itemCount: _historicoResgatesCashback.length,
-                                          itemBuilder: (context, index) {
-                                            final resgate = _historicoResgatesCashback[index];
-                                            return HistoricoWidget(
-                                              categoria: resgate.categoria,
-                                              dataResgate: resgate.dataResgate,
-                                              valorResgate: resgate.valorResgate,
+                                        child: FutureBuilder<List<ResgateCashback>>(
+                                          future: _historicoFuture,
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState == ConnectionState.waiting) {
+                                              return Center(child: CircularProgressIndicator());
+                                            } else if (snapshot.hasError) {
+                                              return Center(child: Text("Erro ao carregar histórico"));
+                                            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                                              return Center(child: Text("Nenhum histórico disponível"));
+                                            }
+
+                                            final historicoResgate = snapshot.data!;
+
+                                            return ListView.builder(
+                                              itemCount: historicoResgate.length,
+                                              itemBuilder: (context, index) {
+                                                return Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                                                  child: HistoricoWidget(
+                                                    categoria: historicoResgate[index].categoria,
+                                                    dataResgate: historicoResgate[index].dataResgate,
+                                                    valorResgate: historicoResgate[index].valorResgate,
+                                                  ),
+                                                );
+                                              },
                                             );
                                           },
                                         ),
@@ -352,27 +376,29 @@ class _PerfilPage extends State<PerfilPage> {
                                                     borderRadius: BorderRadius.circular(8),
                                                   ),
                                                 ),
-                                                onPressed: () {
-                                                  setState(() {
-                                                    final double? valorResgatar = double.tryParse(_cashbackController.text.replaceAll('R\$', '').trim());
+                                                onPressed: () async {
+                                                  final double? valorResgatar = double.tryParse(
+                                                    _cashbackController.text.replaceAll('R\$', '').trim(),
+                                                  );
 
-                                                    if (valorResgatar != null && valorResgatar <= _cashback) {
-                                                      _cashback -= valorResgatar;
-                                                      _cashbackController.value = TextEditingValue(text: _cashback.toStringAsFixed(2));
+                                                  if (valorResgatar != null && valorResgatar <= _cashback) {
+                                                    final novoCashback = _cashback - valorResgatar;
 
-                                                      _historicoResgatesCashback.insert(
-                                                        0,
-                                                        ResgateCashback(
-                                                          categoria: 'troca',
-                                                          dataResgate: DateTime.now(),
-                                                          valorResgate: valorResgatar,
-                                                        ),
-                                                      );
-                                                    }
+                                                    await ConfigsService.atualizarCashback(novoCashback);
+
+                                                    await HistoricoResgateService.registrarResgate('troca', valorResgatar);
+
+                                                    setState(() {
+                                                      _cashback = novoCashback;
+                                                      _cashbackController.text = _cashback.toStringAsFixed(2);
+                                                    });
+
+                                                    _loadConfig();
 
                                                     Navigator.pop(context);
-                                                  });
+                                                  }
                                                 },
+
                                                 child: Center(
                                                   child: Text("Resgatar Agora", style: TextStyle(color: Colors.white, fontSize: 16)),
                                                 ),
