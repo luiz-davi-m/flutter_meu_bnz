@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
-import '../data/services/produto.service.dart';
-import '../domain/models/Produto.dart';
-import '../widgets/product_card.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../data/services/produto_promocao.service.dart';
+import '../../domain/models/ProdutoPromocao.dart';
+import 'product_card.dart';
+import 'package:flutter_meu_bnz/ui/home/home_page_app.dart';
+import 'package:flutter_meu_bnz/ui/perfil/perfil_page.dart';
+import 'package:flutter_meu_bnz/utils/widgets/float_action_button.dart';
+
 
 class JournalOfertasScreen extends StatefulWidget {
   const JournalOfertasScreen({super.key});
@@ -15,48 +20,69 @@ class _JournalOfertasScreenState extends State<JournalOfertasScreen> {
   final List<String> _categorias = [
     'Limpeza',
     'Bebidas',
-    'Frios',
+    'Laticinios',
     'Padaria',
     'Enlatados',
     'Alimento',
-    'Proteinas',
-    'Fruta',
+    'Carnes',
+    'Mercearia',
+    'Higiene',
+    'Frutas',
   ];
 
-  final List<Color> _coresFundo = [
-    const Color(0xFFF5F9FF),
-    const Color(0xFFF0FFF0),
-  ];
+  Future<List<ProdutoPromocao>> _carregarProdutosJornal() async {
+    try {
+      final produtos = await ProdutoPromocaoService.listarProdutos();
 
-  Future<List<Produto>> _carregarProdutos() async {
-    await Future.delayed(const Duration(milliseconds: 300));
-    return ProdutoService.listarProdutos();
+      // Converta Produto para ProdutoPromocao ou filtre os que têm promoção
+      return produtos.where((p) => p.precoPromocao != null)
+          .map((p) => ProdutoPromocao(
+        id: p.id,
+        nome: p.nome,
+        preco: p.preco,
+        foto: p.foto,
+        categoria: p.categoria,
+        precoPromocao: p.precoPromocao!, percentualDesconto: ((p.preco - p.precoPromocao!) / p.preco) * 100,
+        //validoAte: p.validoAte, // Adicione outros campos necessários
+      ))
+          .toList();
+    } catch (e) {
+      debugPrint('Erro ao carregar produtos: $e');
+      return [];
+    }
   }
 
-  List<Produto> _filtrarProdutosPorCategoria(List<Produto> produtos) {
+  List<ProdutoPromocao> _filtrarProdutosPorCategoria(List<ProdutoPromocao> produtos) {
     return produtos.where((produto) {
-      return produto.categoria?.toLowerCase() == _categoriaSelecionada.toLowerCase();
+      return produto.categoria.toLowerCase() == _categoriaSelecionada.toLowerCase();
     }).toList();
+  }
+
+  double _calcularPercentualDesconto(double preco, double precoPromocao) {
+    return ((preco - precoPromocao) / preco) * 100;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      floatingActionButton: MenuFloatingActionButton(),
       appBar: AppBar(
         backgroundColor: const Color(0xFF253885),
         toolbarHeight: 0,
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
-        child: const Icon(Icons.menu, color: Colors.white),
-        onPressed: _mostrarMenuFlutuante,
-      ),
+      //floatingActionButton: FloatingActionButton(
+        //backgroundColor: Colors.blue,
+        //child: const Icon(Icons.menu, color: Colors.white),
+        //onPressed: _mostrarMenuFlutuante,
+
+     // ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Cabeçalho
               Padding(
                 padding: const EdgeInsets.only(left: 20, top: 20),
                 child: const Text(
@@ -68,6 +94,8 @@ class _JournalOfertasScreenState extends State<JournalOfertasScreen> {
                   ),
                 ),
               ),
+
+              // Imagem do mascote
               Container(
                 height: 180,
                 padding: const EdgeInsets.symmetric(vertical: 20),
@@ -80,6 +108,8 @@ class _JournalOfertasScreenState extends State<JournalOfertasScreen> {
                   ),
                 ),
               ),
+
+              // Seletor de categoria
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Container(
@@ -120,14 +150,17 @@ class _JournalOfertasScreenState extends State<JournalOfertasScreen> {
                   ),
                 ),
               ),
+
               const SizedBox(height: 20),
-              FutureBuilder<List<Produto>>(
-                future: _carregarProdutos(),
+
+              // Lista de produtos
+              FutureBuilder<List<ProdutoPromocao>>(
+                future: _carregarProdutosJornal(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
-                    return const Center(child: Text("Erro ao carregar produtos"));
+                    return Center(child: Text("Erro ao carregar produtos: ${snapshot.error}"));
                   }
 
                   final produtos = snapshot.data ?? [];
@@ -137,13 +170,16 @@ class _JournalOfertasScreenState extends State<JournalOfertasScreen> {
                     return Center(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 15),
-                        child: Text("Nenhum produto de $_categoriaSelecionada disponível"),
+                        child: Text(
+                          "Nenhuma promoção disponível para $_categoriaSelecionada",
+                          style: const TextStyle(color: Colors.grey),
+                        ),
                       ),
                     );
                   }
 
                   return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
                     child: GridView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
@@ -156,21 +192,51 @@ class _JournalOfertasScreenState extends State<JournalOfertasScreen> {
                       itemCount: produtosFiltrados.length,
                       itemBuilder: (context, index) {
                         final produto = produtosFiltrados[index];
-                        return Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: _coresFundo[index % _coresFundo.length],
-                          ),
-                          child: ProductCard(
-                            imageUrl: 'imagens/${produto.foto}',
-                            title: produto.nome,
-                            price: 'R\$ ${produto.preco.toStringAsFixed(2)}',
-                          ),
+                        final percentualDesconto = _calcularPercentualDesconto(
+                            produto.preco,
+                            produto.precoPromocao ?? produto.preco
+                        );
+
+                        return ProductCard(
+                          imageUrl: produto.foto,
+                          title: produto.nome,
+                          price: produto.preco,
+                          promoPrice: produto.precoPromocao,
+                          discountPercentage: percentualDesconto,
                         );
                       },
                     ),
                   );
                 },
+              ),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 12),
+                decoration: BoxDecoration(
+                  color: Colors.blue[50],
+                  border: Border(top: BorderSide(color: Colors.blue[100]!, width: 1)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 16),
+                      child: Icon(
+                        Icons.storefront_rounded,
+                        color: Colors.blue.shade800,
+                        size: 26,
+                      ),
+                    ),
+                    Text(
+                      'Disponível em nossas lojas físicas',
+                      style: TextStyle(
+                        color: Colors.blue.shade900,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 20),
             ],
@@ -187,14 +253,21 @@ class _JournalOfertasScreenState extends State<JournalOfertasScreen> {
     showMenu(
       context: context,
       position: RelativeRect.fromLTRB(
-        buttonPosition.dx + 233,
-        buttonPosition.dy + 380,
+        buttonPosition.dx + 253,
+        buttonPosition.dy + 738,
         buttonPosition.dx + button.size.width,
         buttonPosition.dy + button.size.height,
       ),
       items: [
-        const PopupMenuItem(
+        PopupMenuItem(
           value: 'descontos',
+          onTap: () {
+            print('Descontos');
+             Navigator.push(
+               context,
+               MaterialPageRoute(builder: (context) => const HomePageApp()),
+             );
+          },
           child: Row(
             children: [
               Icon(Icons.discount, color: Colors.blue),
@@ -219,8 +292,15 @@ class _JournalOfertasScreenState extends State<JournalOfertasScreen> {
             ],
           ),
         ),
-        const PopupMenuItem(
+        PopupMenuItem(
           value: 'perfil',
+          onTap: () {
+            print('perfil');
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const PerfilPage()),
+            );
+          },
           child: Row(
             children: [
               Icon(Icons.person, color: Colors.blue),

@@ -13,7 +13,6 @@ class Produto {
     required this.preco,
     required this.foto,
     required this.percentualDesconto,
-    required this.categoria, // Adicionado como parâmetro obrigatório
   });
 
   // Método para converter JSON do Supabase para um objeto Produto

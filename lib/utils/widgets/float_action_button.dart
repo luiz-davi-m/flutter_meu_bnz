@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../ui/home/home.dart';
 import '../../ui/perfil/perfil_page.dart';
+import '../../ui/Jornal/journal_ofertas_screen.dart';
 
 class MenuFloatingActionButton extends StatelessWidget {
   const MenuFloatingActionButton({super.key});
@@ -28,15 +29,16 @@ class MenuFloatingActionButton extends StatelessWidget {
           items: [
             PopupMenuItem(
               value: 1,
+              onTap: () {
+                print('Descontos');
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Home()),
+                );
+              },
               child: GestureDetector(
-                onTap: () {
-                  print('Descontos');
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Home()),
-                  );
-                },
+
                 child: Row(
                   children: [
                     Icon(Icons.discount, color: Colors.blue),
@@ -48,14 +50,14 @@ class MenuFloatingActionButton extends StatelessWidget {
             ),
             PopupMenuItem(
               value: 2,
+              onTap: () {
+                print('Jornal');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const JournalOfertasScreen()),
+                );
+              },
               child: GestureDetector(
-                onTap: () {
-                  print('Jornal');
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => JornalPage()),
-                  // );
-                },
                 child: Row(
                   children: [
                     Icon(Icons.newspaper, color: Colors.blue),
