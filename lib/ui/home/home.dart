@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_meu_bnz/data/services/promo_banners.service.dart';
+import 'package:flutter_meu_bnz/domain/models/PromoBanner.dart';
 import 'package:flutter_meu_bnz/ui/home/widgets/card_produto_widget.dart';
 import 'package:flutter_meu_bnz/ui/home/widgets/card_widget.dart';
 import 'package:flutter_meu_bnz/ui/home/widgets/card_promocoes.dart';
 
 import '../../data/services/produto.service.dart';
-import '../../data/services/promocao_banner.service.dart';
 import '../../domain/models/Produto.dart';
-import '../../domain/models/PromocaoBanner.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -16,11 +16,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final List<String> promoImages = [
-    "http://mercado.carrefour.com.br/_next/image?url=https%3A%2F%2Fcarrefourbrfood.vtexassets.com%2Fassets%2Fvtex.file-manager-graphql%2Fimages%2F86645206-25da-47dd-a03b-ca619d4d4ffe___a56690441ae1138f7b43e41de39ddb9c.png&w=1920&q=50",
-    "https://mercado.carrefour.com.br/_next/image?url=https%3A%2F%2Fcarrefourbrfood.vtexassets.com%2Fassets%2Fvtex.file-manager-graphql%2Fimages%2Fa7839426-b3f5-4c2b-a4bd-351ba2c7a16a___3513cfe54334d820d77345a4a55fb98c.png&w=1920&q=50",
-    "https://mercado.carrefour.com.br/_next/image?url=https%3A%2F%2Fcarrefourbrfood.vtexassets.com%2Fassets%2Fvtex.file-manager-graphql%2Fimages%2F1f3877b7-d6e9-40a4-a37e-a0fff3601aa0___51e81faeed2b2adfc4c0cb8762e9d3cd.jpg&w=1920&q=50"
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -148,9 +143,9 @@ class _HomeState extends State<Home> {
               padding: const EdgeInsets.only(top: 20),
               child: SizedBox(
                 height: 130,
-                child: FutureBuilder<List<Promocaobanner>>(
+                child: FutureBuilder<List<PromoBanner>>(
                   future: Future.delayed(Duration(milliseconds: 500), () async {
-                    return PromocaoBannerService.listarPromocoesBannerAtivas();
+                    return PromoBannerService.listarPromoBannersAtivos();
                   }),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -181,9 +176,7 @@ class _HomeState extends State<Home> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
               child: FutureBuilder<List<Produto>>(
-                future: Future.delayed(Duration(milliseconds: 500), () async {
-                  return ProdutoService.listarProdutos();
-                }),
+                future: ProdutoService.listarProdutos(), // Chamada direta
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(child: CircularProgressIndicator());
