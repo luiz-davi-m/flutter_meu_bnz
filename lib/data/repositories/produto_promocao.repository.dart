@@ -10,8 +10,6 @@ class ProdutoPromocaoRepository  {
         .from('produto_promocao')
         .select('*');
 
-    print(response);
-
     if (response.isEmpty) {
       return [];
     }

@@ -23,10 +23,9 @@ class ProdutoPromocao extends Produto {
   @override
   double get precoComDesconto => precoPromocao;
 
-  // Método fromJson corrigido para garantir compatibilidade
   factory ProdutoPromocao.fromJson(Map<String, dynamic> json) {
     return ProdutoPromocao(
-      id: json['id'] ?? json['ID'], // Versões alternativas de nome
+      id: json['id'] ?? json['ID'],
       nome: json['nome'] ?? json['NOME'],
       preco: _parseDouble(json['preco'] ?? json['PRECO']),
       foto: json['foto'] ?? json['FOTO'],
@@ -54,9 +53,9 @@ class ProdutoPromocao extends Produto {
       'nome': nome,
       'preco': preco,
       'foto': foto,
-      'percentual_desconto': percentualDesconto, // Padrão snake_case para Supabase
+      'percentual_desconto': percentualDesconto,
       'categoria': categoria,
-      'preco_promocao': precoPromocao, // Padrão snake_case para Supabase
+      'preco_promocao': precoPromocao,
     };
   }
 }

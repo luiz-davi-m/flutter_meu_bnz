@@ -1,6 +1,5 @@
-// lib/presentation/widgets/oferta_card.dart
 import 'package:flutter/material.dart';
-import '../../domain/models/ProdutoPromocao.dart';
+import '../../../domain/models/ProdutoPromocao.dart';
 
 class OfertaCard extends StatelessWidget {
   final ProdutoPromocao oferta;
@@ -17,7 +16,6 @@ class OfertaCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Imagem com desconto
           Expanded(
             child: Stack(
               children: [
@@ -59,7 +57,6 @@ class OfertaCard extends StatelessWidget {
             ),
           ),
 
-          // Detalhes
           Padding(
             padding: const EdgeInsets.all(12),
             child: Column(
@@ -100,7 +97,4 @@ class OfertaCard extends StatelessWidget {
     );
   }
 
-  String _formatarData(DateTime data) {
-    return '${data.day}/${data.month}/${data.year}';
-  }
 }

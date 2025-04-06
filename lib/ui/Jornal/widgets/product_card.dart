@@ -1,8 +1,4 @@
-// lib/presentation/screens/journal_ofertas_screen.dart
 import 'package:flutter/material.dart';
-import 'package:flutter_meu_bnz/data/services/produto_promocao.service.dart';
-import '../../../domain/models/ProdutoPromocao.dart';
-import 'oferta_card.dart';
 
 class ProductCard extends StatelessWidget {
   final String imageUrl;
@@ -29,7 +25,7 @@ class ProductCard extends StatelessWidget {
       ),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.blue[50], // Fundo azul claro do card
+          color: Colors.blue[50],
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
@@ -42,10 +38,9 @@ class ProductCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Container da imagem com fundo destacado
             Container(
               decoration: BoxDecoration(
-                color: Colors.white, // Fundo branco atrás da imagem
+                color: Colors.white,
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(12),
                 ),
@@ -59,7 +54,6 @@ class ProductCard extends StatelessWidget {
               ),
               child: Stack(
                 children: [
-                  // Container para o gradiente de fundo
                   Container(
                     height: 120,
                     decoration: BoxDecoration(
@@ -77,7 +71,6 @@ class ProductCard extends StatelessWidget {
                     ),
                   ),
 
-                  // Imagem sobreposta
                   Center(
                     child: ClipRRect(
                       borderRadius: const BorderRadius.vertical(
@@ -107,7 +100,6 @@ class ProductCard extends StatelessWidget {
                     ),
                   ),
 
-                  // Badge de desconto
                   Positioned(
                     top: 8,
                     right: 8,
@@ -134,7 +126,6 @@ class ProductCard extends StatelessWidget {
               ),
             ),
 
-            // Detalhes do produto
             Padding(
               padding: const EdgeInsets.all(12),
               child: Column(

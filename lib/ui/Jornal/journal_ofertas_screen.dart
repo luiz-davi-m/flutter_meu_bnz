@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../data/services/produto_promocao.service.dart';
 import '../../domain/models/ProdutoPromocao.dart';
-import 'product_card.dart';
+import 'widgets/product_card.dart';
 import 'package:flutter_meu_bnz/ui/home/home_page_app.dart';
 import 'package:flutter_meu_bnz/ui/perfil/perfil_page.dart';
 import 'package:flutter_meu_bnz/utils/widgets/float_action_button.dart';
@@ -34,7 +33,6 @@ class _JournalOfertasScreenState extends State<JournalOfertasScreen> {
     try {
       final produtos = await ProdutoPromocaoService.listarProdutos();
 
-      // Converta Produto para ProdutoPromocao ou filtre os que têm promoção
       return produtos.where((p) => p.precoPromocao != null)
           .map((p) => ProdutoPromocao(
         id: p.id,
@@ -43,7 +41,7 @@ class _JournalOfertasScreenState extends State<JournalOfertasScreen> {
         foto: p.foto,
         categoria: p.categoria,
         precoPromocao: p.precoPromocao!, percentualDesconto: ((p.preco - p.precoPromocao!) / p.preco) * 100,
-        //validoAte: p.validoAte, // Adicione outros campos necessários
+
       ))
           .toList();
     } catch (e) {
@@ -71,18 +69,11 @@ class _JournalOfertasScreenState extends State<JournalOfertasScreen> {
         backgroundColor: const Color(0xFF253885),
         toolbarHeight: 0,
       ),
-      //floatingActionButton: FloatingActionButton(
-        //backgroundColor: Colors.blue,
-        //child: const Icon(Icons.menu, color: Colors.white),
-        //onPressed: _mostrarMenuFlutuante,
-
-     // ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Cabeçalho
               Padding(
                 padding: const EdgeInsets.only(left: 20, top: 20),
                 child: const Text(
@@ -95,7 +86,6 @@ class _JournalOfertasScreenState extends State<JournalOfertasScreen> {
                 ),
               ),
 
-              // Imagem do mascote
               Container(
                 height: 180,
                 padding: const EdgeInsets.symmetric(vertical: 20),
@@ -109,7 +99,6 @@ class _JournalOfertasScreenState extends State<JournalOfertasScreen> {
                 ),
               ),
 
-              // Seletor de categoria
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Container(
@@ -153,7 +142,6 @@ class _JournalOfertasScreenState extends State<JournalOfertasScreen> {
 
               const SizedBox(height: 20),
 
-              // Lista de produtos
               FutureBuilder<List<ProdutoPromocao>>(
                 future: _carregarProdutosJornal(),
                 builder: (context, snapshot) {
@@ -243,73 +231,6 @@ class _JournalOfertasScreenState extends State<JournalOfertasScreen> {
           ),
         ),
       ),
-    );
-  }
-
-  void _mostrarMenuFlutuante() {
-    final RenderBox button = context.findRenderObject() as RenderBox;
-    final Offset buttonPosition = button.localToGlobal(Offset.zero);
-
-    showMenu(
-      context: context,
-      position: RelativeRect.fromLTRB(
-        buttonPosition.dx + 253,
-        buttonPosition.dy + 738,
-        buttonPosition.dx + button.size.width,
-        buttonPosition.dy + button.size.height,
-      ),
-      items: [
-        PopupMenuItem(
-          value: 'descontos',
-          onTap: () {
-            print('Descontos');
-             Navigator.push(
-               context,
-               MaterialPageRoute(builder: (context) => const HomePageApp()),
-             );
-          },
-          child: Row(
-            children: [
-              Icon(Icons.discount, color: Colors.blue),
-              SizedBox(width: 10),
-              Text('Descontos'),
-            ],
-          ),
-        ),
-        PopupMenuItem(
-          value: 'jornal',
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const JournalOfertasScreen()),
-            );
-          },
-          child: const Row(
-            children: [
-              Icon(Icons.newspaper, color: Colors.blue),
-              SizedBox(width: 10),
-              Text('Jornal'),
-            ],
-          ),
-        ),
-        PopupMenuItem(
-          value: 'perfil',
-          onTap: () {
-            print('perfil');
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const PerfilPage()),
-            );
-          },
-          child: Row(
-            children: [
-              Icon(Icons.person, color: Colors.blue),
-              SizedBox(width: 10),
-              Text('Perfil'),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }

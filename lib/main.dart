@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_meu_bnz/screens/journal_ofertas_screen.dart';
 import 'package:flutter_meu_bnz/ui/app.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
