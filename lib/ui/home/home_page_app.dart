@@ -10,7 +10,7 @@ class HomePageApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: MenuFloatingActionButton(),
+
       appBar: AppBar(
         backgroundColor: Color(0xFF253885),
         toolbarHeight: 0,
