@@ -15,9 +15,8 @@ class CardProduto extends StatelessWidget {
       ),
       elevation: 4,
       child: Column(
-        mainAxisSize: MainAxisSize.min, // Permite que o card cresça conforme necessário
+        mainAxisSize: MainAxisSize.min,
         children: [
-          // Banner de desconto
           Container(
             width: double.infinity,
             decoration: BoxDecoration(
@@ -125,8 +124,8 @@ class CardProduto extends StatelessWidget {
                 Text(
                   "Confira os detalhes",
                   style: TextStyle(
-                    color: Colors.blue[800], // Azul escuro
-                    fontSize: 12, // Diminuído o tamanho da fonte
+                    color: Colors.blue[800],
+                    fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

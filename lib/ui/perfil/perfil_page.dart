@@ -5,6 +5,7 @@ import 'package:flutter_meu_bnz/ui/home/home.dart';
 import 'package:flutter_meu_bnz/ui/home/home_page_app.dart';
 import 'package:flutter_meu_bnz/ui/perfil/widgets/historico_widget.dart';
 import 'package:flutter_meu_bnz/utils/widgets/float_action_button.dart';
+import 'package:flutter_meu_bnz/ui/Jornal/journal_ofertas_screen.dart';
 
 import '../../data/services/configs.service.dart';
 import '../../domain/models/ResgateCashback.dart';
