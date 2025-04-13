@@ -27,7 +27,11 @@ Oferecer uma experiência **simples e intuitiva**, focada no processo de **cashb
    - Exibe **itens com promoções**, **cashback** e **cupons de desconto**, com informações atualizadas sobre **preços** e **disponibilidade em estoque**.
 
 3. **Jornal:**
-   - Seção dedicada à **divulgação de informações** da loja, **anúncios** e **atividades relacionadas**.
+   Seção dedicada à **divulgação de promoções** com:  
+   - Promoções por categoria (limpeza, bebidas, laticínios,carnes, alimentos...)  
+   - Comparação de preços (original vs. promocional)  
+   - Cálculo de economia por produto  
+   - Indicação de disponibilidade física
 
 4. **Extrato de Cashback:**
    - Permite ao usuário visualizar o **histórico de resgates** e **saldo acumulado**.
@@ -36,6 +40,7 @@ Oferecer uma experiência **simples e intuitiva**, focada no processo de **cashb
 
 ## :art: **Melhorias Visuais**
 - **Aprimoramentos na exibição de descontos**, incluindo o **valor original** dos produtos para maior transparência nas promoções.
+- **Aprimoramentos na seção Jornal**
 
 ---
 
@@ -89,4 +94,6 @@ Cada atividade a ser desenvolvida terá uma **issue** no **projects** com o resp
 ## :hammer_and_wrench: **Tecnologias Usadas**
 - [**Figma**](https://github.com/users/luiz-davi-m/projects/4)
 - [**Flutter**](https://flutter.dev/)
+- [**Superbase**](https://supabase.com/)
+  
 
