@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_meu_bnz/data/services/historico_resgates.service.dart';
-import 'package:flutter_meu_bnz/ui/home/home.dart';
-import 'package:flutter_meu_bnz/ui/home/home_page_app.dart';
 import 'package:flutter_meu_bnz/ui/perfil/widgets/historico_widget.dart';
 import 'package:flutter_meu_bnz/utils/widgets/float_action_button.dart';
-import 'package:flutter_meu_bnz/ui/Jornal/journal_ofertas_screen.dart';
-
+import '../../../data/services/usuario.service.dart';
+import 'package:flutter_meu_bnz/ui/Login/login_screen.dart';
 import '../../data/services/configs.service.dart';
 import '../../domain/models/ResgateCashback.dart';
 
@@ -581,6 +579,25 @@ class _PerfilPage extends State<PerfilPage> {
                     trailing: Icon(Icons.arrow_forward_ios, color: Color(0xFF253885), size: 16),
                     onTap: () {
                       print("Clicou em Sobre nós");
+                    },
+                  ),
+                  Divider(),
+                  ListTile(
+                    leading: Icon(Icons.exit_to_app, color: Color(0xFF253885)),
+                    title: Text("Sair"),
+                    trailing: Icon(Icons.arrow_forward_ios, color: Color(0xFF253885), size: 16),
+                    onTap: () async {
+                      try {
+                        await UsuarioService.logout();
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) => const LoginScreen()),
+                              (Route<dynamic> route) => false,
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Erro ao sair da conta. Tente novamente.")),
+                        );
+                      }
                     },
                   ),
                 ],
