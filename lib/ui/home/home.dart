@@ -4,7 +4,7 @@ import 'package:flutter_meu_bnz/domain/models/PromoBanner.dart';
 import 'package:flutter_meu_bnz/ui/home/widgets/card_produto_widget.dart';
 import 'package:flutter_meu_bnz/ui/home/widgets/card_widget.dart';
 import 'package:flutter_meu_bnz/ui/home/widgets/card_promocoes.dart';
-
+import '../../data/services/usuario.service.dart';
 import '../../data/services/produto.service.dart';
 import '../../domain/models/Produto.dart';
 
@@ -16,6 +16,32 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  String userName = 'Usuário';
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserName();
+  }
+
+  Future<void> _loadUserName() async {
+    try {
+      final name = await UsuarioService.getUserName();
+      if (mounted) {
+        setState(() {
+          userName = name;
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +63,7 @@ class _HomeState extends State<Home> {
                       bottom: 15,
                       left: 15,
                       child: Image.asset(
-                        'imagens/meu_bnz.jpg', // Caminho da imagem
+                        'imagens/meu_bnz.jpg',
                         height: 230,
                         width: 230,
                       ),
@@ -104,8 +130,17 @@ class _HomeState extends State<Home> {
                           alignment: Alignment.centerLeft,
                           child: Padding(
                             padding: const EdgeInsets.only(left: 30),
-                            child: const Text(
-                              "Olá, Usuário da Silva Texeira",
+                            child: isLoading
+                                ? SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                                : Text(
+                              "Olá, $userName",
                               style: TextStyle(color: Colors.white, fontSize: 15),
                             ),
                           ),
