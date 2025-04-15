@@ -4,7 +4,9 @@
 [Geisianny Bernardo da Silva](https://github.com/Geisianny) (email: geisiannybernardo@gmail.com) | [Luiz Davi Mendes de Matos](https://github.com/luiz-davi-m) (email: luizd4398@gmail.com)
 
 ---
-
+## :video_camera:: **Video de apresentação**
+Acesse o vídeo de apresentação do projeto: [BNZ-video](https://drive.google.com/file/d/1tqrSGoELWLsIVxqY9dg_Tz8z8X8JzYjk/view?usp=drive_link)
+---
 ## :page_with_curl: **Sobre o Projeto**
 O projeto é referente à **2ª Verificação de Aprendizagem** da disciplina de **Desenvolvimento de Aplicações Móveis**, ministrada pela **Professora Dra. Thaís Alves Burity**, da **UFAPE**, no período **2024.2**.
 
