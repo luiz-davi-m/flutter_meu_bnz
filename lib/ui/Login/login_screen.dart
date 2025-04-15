@@ -4,6 +4,7 @@ import '../../ui/Login/widgets/custom_button.dart';
 import '../../ui/Login/widgets/custom_text_field.dart';
 import '../../data/services/usuario.service.dart';
 import '../home/home_page_app.dart';
+import '../cadastro/screens/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -23,7 +24,7 @@ class LoginScreenState extends State<LoginScreen> {
   String formatCpfCnpj(String value) {
     final cleaned = value.replaceAll(RegExp(r'[^0-9]'), '');
 
-    if (cleaned.length <= 11) { // CPF
+    if (cleaned.length <= 11) {
       if (cleaned.length > 9) {
         return '${cleaned.substring(0, 3)}.${cleaned.substring(3, 6)}.${cleaned.substring(6, 9)}-${cleaned.substring(9)}';
       } else if (cleaned.length > 6) {
@@ -226,8 +227,8 @@ class LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     SizedBox(height: screenSize.height * 0.04),
-                    Image.network(
-                      'https://cdn.builder.io/api/v1/image/assets/TEMP/90149625881bed76ba94c301a1441943279ddb2d',
+                    Image.asset(
+                      "imagens/icones/imgLogin.png",
                       width: screenSize.width * 0.3,
                     ),
                     SizedBox(height: screenSize.height * 0.04),
@@ -353,7 +354,13 @@ class LoginScreenState extends State<LoginScreen> {
                         ),
                         SizedBox(width: screenSize.width * 0.05),
                         TextButton(
-                          onPressed: _isLoading ? null : () {},
+                          onPressed: _isLoading ? null : () {
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                            );
+                          },
                           child: const Text(
                             'Cadastrar-se',
                             style: TextStyle(

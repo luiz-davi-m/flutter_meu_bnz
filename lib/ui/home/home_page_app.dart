@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_meu_bnz/ui/home/home.dart';
 import 'package:flutter_meu_bnz/ui/Jornal/journal_ofertas_screen.dart';
-import 'package:flutter_meu_bnz/utils/widgets/float_action_button.dart';
 import 'package:flutter_meu_bnz/ui/perfil/perfil_page.dart';
 
 class HomePageApp extends StatelessWidget {
@@ -40,10 +39,6 @@ class HomePageApp extends StatelessWidget {
                 child: GestureDetector(
                   onTap: () {
                     print('Descontos');
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => DescontosPage()),
-                    // );
                   },
                   child: Row(
                     children: [
@@ -55,8 +50,8 @@ class HomePageApp extends StatelessWidget {
                 ),
               ),
               PopupMenuItem(
-                value: 2, // Mantenha um valor único para identificar o item
-                onTap: () { // Use onTap diretamente no PopupMenuItem
+                value: 2,
+                onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const JournalOfertasScreen()),
@@ -75,10 +70,10 @@ class HomePageApp extends StatelessWidget {
                 child: GestureDetector(
                   onTap: () {
                     print('Perfil');
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => PerfilPage()),
-                    // );
+                    Navigator.push(
+                      context,
+                       MaterialPageRoute(builder: (context) => PerfilPage()),
+                     );
                   },
                   child: Row(
                     children: [

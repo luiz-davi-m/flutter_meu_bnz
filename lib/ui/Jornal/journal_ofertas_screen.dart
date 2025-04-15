@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import '../../data/services/produto_promocao.service.dart';
 import '../../domain/models/ProdutoPromocao.dart';
 import 'widgets/product_card.dart';
-import 'package:flutter_meu_bnz/ui/home/home_page_app.dart';
-import 'package:flutter_meu_bnz/ui/perfil/perfil_page.dart';
 import 'package:flutter_meu_bnz/utils/widgets/float_action_button.dart';
-
 
 class JournalOfertasScreen extends StatefulWidget {
   const JournalOfertasScreen({super.key});
