@@ -10,18 +10,18 @@ class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<LoginScreen> createState() => LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _cpfCnpjController = TextEditingController();
+class LoginScreenState extends State<LoginScreen> {
+  final formKey = GlobalKey<FormState>();
+  final cpfCnpjController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
   bool _isLoading = false;
   OverlayEntry? _overlayEntry;
 
-  String _formatCpfCnpj(String value) {
+  String formatCpfCnpj(String value) {
     final cleaned = value.replaceAll(RegExp(r'[^0-9]'), '');
 
     if (cleaned.length <= 11) {
@@ -46,11 +46,22 @@ class _LoginScreenState extends State<LoginScreen> {
     return cleaned;
   }
 
-  void _onCpfCnpjChanged(String value) {
-    final cursorPosition = _cpfCnpjController.selection.start;
-    final formatted = _formatCpfCnpj(value);
 
-    _cpfCnpjController.value = _cpfCnpjController.value.copyWith(
+  String? validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Campo obrigatório';
+    }
+    if (value.length < 6) {
+      return 'Mínimo 6 caracteres';
+    }
+    return null;
+  }
+
+  void _onCpfCnpjChanged(String value) {
+    final cursorPosition = cpfCnpjController.selection.start;
+    final formatted = formatCpfCnpj(value);
+
+    cpfCnpjController.value = cpfCnpjController.value.copyWith(
       text: formatted,
       selection: TextSelection.collapsed(
         offset: cursorPosition + (formatted.length - value.length),
@@ -116,14 +127,14 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _login() async {
-    if (_formKey.currentState!.validate()) {
+    if (formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
       });
 
       try {
 
-        final cpfCnpj = _cpfCnpjController.text.replaceAll(RegExp(r'[^0-9]'), '');
+        final cpfCnpj = cpfCnpjController.text.replaceAll(RegExp(r'[^0-9]'), '');
         final senha = _passwordController.text;
 
         final usuario = await UsuarioService.autenticar(cpfCnpj, senha);
@@ -153,8 +164,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    _cpfCnpjController.addListener(() {
-      final text = _cpfCnpjController.text;
+    cpfCnpjController.addListener(() {
+      final text = cpfCnpjController.text;
       if (text.isNotEmpty) {
         _onCpfCnpjChanged(text);
       }
@@ -164,7 +175,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void dispose() {
     _removeErrorMessage();
-    _cpfCnpjController.dispose();
+    cpfCnpjController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -202,7 +213,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             child: SingleChildScrollView(
               child: Form(
-                key: _formKey,
+                key: formKey,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -255,7 +266,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     SizedBox(height: screenSize.height * 0.015),
                     CustomTextField(
-                      controller: _cpfCnpjController,
+                      controller: cpfCnpjController,
                       width: double.infinity,
                       hint: 'Digite seu CPF ou CNPJ',
                       keyboardType: TextInputType.number,
@@ -303,15 +314,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       width: double.infinity,
                       hint: 'Digite sua senha',
                       isPassword: _obscurePassword,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Campo obrigatório';
-                        }
-                        if (value.length < 6) {
-                          return 'Mínimo 6 caracteres';
-                        }
-                        return null;
-                      },
+                      validator: validatePassword,
                       suffixIcon: IconButton(
                         icon: Icon(
                           _obscurePassword ? Icons.visibility_off : Icons.visibility,

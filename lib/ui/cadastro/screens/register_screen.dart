@@ -9,40 +9,84 @@ class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
 
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+  RegisterScreenState createState() => RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final TextEditingController _cpfCnpjController = TextEditingController();
-  final TextEditingController _senhaController = TextEditingController();
-  final TextEditingController _confirmarSenhaController = TextEditingController();
+class RegisterScreenState extends State<RegisterScreen> {
+  final formKey = GlobalKey<FormState>();
+  final TextEditingController cpfCnpjController = TextEditingController();
+  final TextEditingController senhaController = TextEditingController();
+  final TextEditingController confirmarSenhaController = TextEditingController();
   final TextEditingController _nomeCompletoController = TextEditingController();
   final TextEditingController _generoController = TextEditingController();
   final TextEditingController _dataNascimentoController = TextEditingController();
   final TextEditingController _telefoneController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
 
   bool _isLoading = false;
   String? _errorMessage;
 
   @override
   void dispose() {
-    _cpfCnpjController.dispose();
-    _senhaController.dispose();
-    _confirmarSenhaController.dispose();
+    cpfCnpjController.dispose();
+    senhaController.dispose();
+    confirmarSenhaController.dispose();
     _nomeCompletoController.dispose();
     _generoController.dispose();
     _dataNascimentoController.dispose();
     _telefoneController.dispose();
-    _emailController.dispose();
+    emailController.dispose();
     super.dispose();
   }
 
-  Future<void> _submitForm() async {
-    if (!(_formKey.currentState?.validate() ?? false)) return;
+  String? validateCpfCnpj(String? value) {
+    if (value == null || value.isEmpty) return 'CPF/CNPJ é obrigatório';
 
-    if (_senhaController.text != _confirmarSenhaController.text) {
+    final cleaned = value.replaceAll(RegExp(r'[^0-9]'), '');
+
+    if (cleaned.length < 11) return 'CPF/CNPJ inválido';
+    return null;
+  }
+
+  String formatCpf(String? value) {
+    if (value == null) return '';
+
+    final cleaned = value.replaceAll(RegExp(r'[^0-9]'), '');
+    if (cleaned.length > 9) {
+      return '${cleaned.substring(0, 3)}.${cleaned.substring(3, 6)}.${cleaned.substring(6, 9)}-${cleaned.substring(9)}';
+    }
+    return value;
+  }
+
+  String? validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Senha é obrigatória';
+    }
+    if (value.length < 6) {
+      return 'Senha deve ter pelo menos 6 caracteres';
+    }
+    return null;
+  }
+
+ String? validateEmail(String? value) {
+    if (value == null || value.isEmpty) return 'E-mail é obrigatório';
+    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+      return 'E-mail inválido';
+    }
+    return null;
+  }
+
+  String? validateBirthDate(String? value) {
+    if (value == null || value.isEmpty) return 'Data de nascimento é obrigatória';
+    if (!UsuarioService.validarDataNascimento(value)) return 'Data inválida';
+
+    return null;
+  }
+
+  Future<void> _submitForm() async {
+    if (!(formKey.currentState?.validate() ?? false)) return;
+
+    if (senhaController.text != confirmarSenhaController.text) {
       setState(() {
         _errorMessage = 'As senhas não coincidem';
       });
@@ -55,18 +99,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
 
     try {
-      final cpfCnpj = _cpfCnpjController.text.replaceAll(RegExp(r'[^0-9]'), '');
+      final cpfCnpj = cpfCnpjController.text.replaceAll(RegExp(r'[^0-9]'), '');
       final telefone = _telefoneController.text.replaceAll(RegExp(r'[^0-9]'), '');
       final dataNascimento = _dataNascimentoController.text;
 
       final usuario = await UsuarioService.registrar(
         cpf: cpfCnpj,
-        senha: _senhaController.text,
+        senha: senhaController.text,
         nomeCompleto: _nomeCompletoController.text,
         genero: _generoController.text,
         dataNascimento: dataNascimento,
         telefone: telefone,
-        email: _emailController.text,
+        email: emailController.text,
       );
 
       if (mounted) {
@@ -126,7 +170,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 35),
                   child: Form(
-                    key: _formKey,
+                    key: formKey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -157,28 +201,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         const SizedBox(height: 26),
 
                         CustomInputField(
-                          controller: _cpfCnpjController,
+                          controller: cpfCnpjController,
                           label: 'CPF/CNPJ',
                           fieldType: 'cpfCnpj',
                           required: true,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'CPF/CNPJ é obrigatório';
-                            }
-                            final digitsOnly = value.replaceAll(RegExp(r'[^0-9]'), '');
-                            if (digitsOnly.length == 11) {
-                              if (!UsuarioService.validarCpf(digitsOnly)) {
-                                return 'CPF inválido';
-                              }
-                            } else if (digitsOnly.length == 14) {
-                              if (!UsuarioService.validarCnpj(digitsOnly)) {
-                                return 'CNPJ inválido';
-                              }
-                            } else {
-                              return 'CPF/CNPJ inválido';
-                            }
-                            return null;
-                          },
+                          validator: validateCpfCnpj,
                         ),
                         const SizedBox(height: 26),
 
@@ -223,15 +250,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           label: 'Data de Nascimento',
                           fieldType: 'date',
                           required: true,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Data de nascimento é obrigatória';
-                            }
-                            if (!UsuarioService.validarDataNascimento(value)) {
-                              return 'Data inválida';
-                            }
-                            return null;
-                          },
+                          validator: validateBirthDate,
                         ),
                         const SizedBox(height: 26),
 
@@ -254,41 +273,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         const SizedBox(height: 26),
 
                         CustomInputField(
-                          controller: _emailController,
+                          controller: emailController,
                           label: 'E-mail',
                           required: true,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'E-mail é obrigatório';
-                            }
-                            if (!UsuarioService.validarEmail(value)) {
-                              return 'E-mail inválido';
-                            }
-                            return null;
-                          },
+                          validator: validateEmail,
                           keyboardType: TextInputType.emailAddress,
                         ),
                         const SizedBox(height: 26),
 
                         CustomInputField(
-                          controller: _senhaController,
+                          controller: senhaController,
                           label: 'Senha',
                           required: true,
                           obscureText: true,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Senha é obrigatória';
-                            }
-                            if (value.length < 6) {
-                              return 'Senha deve ter pelo menos 6 caracteres';
-                            }
-                            return null;
-                          },
+                          validator: validatePassword,
                         ),
                         const SizedBox(height: 26),
 
                         CustomInputField(
-                          controller: _confirmarSenhaController,
+                          controller: confirmarSenhaController,
                           label: 'Confirmação de senha',
                           required: true,
                           obscureText: true,
@@ -297,7 +300,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             if (value == null || value.isEmpty) {
                               return 'Confirmação de senha é obrigatória';
                             }
-                            if (value != _senhaController.text) {
+                            if (value != senhaController.text) {
                               return 'As senhas não coincidem';
                             }
                             return null;
